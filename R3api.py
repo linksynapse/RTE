@@ -92,7 +92,8 @@ class R3api(object):
 			data = {
 				"badge":data[0],
 				"card":data[1],
-				"time":data[2]
+				"time":data[2],
+				"serialkey":data[4]
 			}
 			self.headers['cookie'] = self.cookie
 			res = requests.post(self.mdsurl + "history", params=data, verify=False, headers=self.headers)
@@ -140,10 +141,10 @@ class R3api(object):
 		else:
 			return (False, "Error from server", 3)
 
-	def CheckStatus(self):
+	def CheckStatus(self,data):
 		try:
 			self.headers['cookie'] = self.cookie
-			res = requests.post(self.mdsurl + "stanby_user", verify=False, headers=self.headers)
+			res = requests.post(self.mdsurl + "stanby_user", params=data, verify=False, headers=self.headers)
 		except:
 			return (False, "Error from server", 2)
 			

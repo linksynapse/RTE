@@ -1,6 +1,7 @@
 import sqlite3
 import os.path
 import datetime
+import json
 
 class Manager:
 	def __init__(self, config):
@@ -13,10 +14,14 @@ class Manager:
 
 	def Verify(self, Card):
 		# database connection create and query
-		cursor = self.db.cursor()
-		cursor.execute("SELECT * FROM `User` WHERE Card = ?",(Card,))
-		result = cursor.fetchone()
-		cursor.close()
+		with open('data/account.json', 'r') as fs:
+			json_data = json.load(fs)
+
+		result = None
+
+		for x in json_data:
+			if x['CardNumber'] == Card:
+				result = (x['Badge'],x['Name'],x['CardNumber'])
 
 		if(result == None):
 			return (False, None)
@@ -59,27 +64,6 @@ class Manager:
 		cursor = self.db.cursor()
 		cursor.execute("SELECT * FROM `User.History` WHERE Sended = 0 LIMIT 1")
 		result = cursor.fetchone()
-		cursor.close()
-
-		if(result == None):
-			return (False, None)
-		else:
-			return (True, result)
-
-	def ClearAccount(self):
-		db = sqlite3.connect(self.path)
-		cursor = db.cursor()
-		cursor.execute("DELETE FROM `User`")
-		db.commit()
-		cursor.close()
-
-	def InsertAccount(self, data):
-		db = sqlite3.connect(self.path)
-		cursor = db.cursor()
-		cursor.execute("INSERT INTO `User` VALUES (?, ?, ?)",(data['Badge'],data['Name'],data['CardNumber']))
-		db.commit()
-		
-		result = cursor.lastrowid
 		cursor.close()
 
 		if(result == None):

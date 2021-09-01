@@ -26,41 +26,23 @@ class tMain:
 
 	def Read(self):
 		while True:
-			Mifare = self.Reader.GetMifare()
 			EM = self.Reader.GetEM()
 
-			if Mifare != 0:
-				data = self.Dao.Verify(Mifare)
-				if data[0]:
-					# Pass
-					self.Dao.CheckTime(data[1])
-					self.Aies.OnBlue()
-					self.Aies.FulldownExt1()
-					self.Aies.PlaySuccess()
-				else:
-					# Deny
-					self.Aies.OnRed()
-					self.Aies.FulldownExt2()
-					self.Aies.PlayFail()
-			elif EM != 0:
-				data = self.Dao.Verify(EM)
-				if data[0]:
-					# Pass
-					self.Dao.CheckTime(data[1])
-					self.Aies.OnBlue()
-					self.Aies.FulldownExt1()
-					self.Aies.PlaySuccess()
-				else:
-					# Deny
-					self.Aies.OnRed()
-					self.Aies.FulldownExt2()
-					self.Aies.PlayFail()
+			data = self.Dao.Verify(EM)
+			if data[0]:
+				# Pass
+				self.Dao.CheckTime(data[1])
+				self.Aies.OnBlue()
+				self.Aies.FulldownExt1()
+				self.Aies.PlaySuccess()
 			else:
-				pass
-
+				# Deny
+				self.Aies.OnRed()
+				self.Aies.FulldownExt2()
+				self.Aies.PlayFail()
+			
 			self.Aies.ClearLed()
 			self.Aies.RaisingAll()
-
 
 if __name__ == '__main__':
 	worker = tMain()

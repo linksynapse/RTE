@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-class Manager:
+class Accessories:
 	def __init__(self,config):
 		self.R = config.LedRed()
 		self.G = config.LedGreen()

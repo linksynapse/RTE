@@ -1,6 +1,6 @@
 import serial, struct
 
-class handler:
+class RfidReader:
 	def __init__(self,config):
 		self.SERIAL = serial.Serial(config.Component(), config.Baudrate())
 		self.SERIAL.timeout = 0.1

@@ -1,5 +1,5 @@
 from module import CONF, LOG4S, API, DATA
-from module import NT_SYS_PUBIP, NT_SYS_NATIP
+from module import NT_SYS_PUBIP, NT_SYS_NATIP, NT_SYS_CPUID, NT_SYS_MACAR
 import traceback
 import time
 import json
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 	status = None
 
 	try:
-		data = API.GetDeviceInformation("F0000002CPUID", NT_SYS_PUBIP, "00:EF:0A:24:04:01")
+		data = API.GetDeviceInformation(NT_SYS_CPUID, NT_SYS_NATIP, NT_SYS_PUBIP, NT_SYS_MACAR)
 		# Successfully getting serialkey from authentication server
 		if(data[0]):
 			resultCode = data[2]

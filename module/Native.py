@@ -1,4 +1,5 @@
 from requests import get
+from getmac import get_mac_address as gma
 import socket
 
 def GetCPUID():
@@ -32,3 +33,6 @@ def GetNATIPaddress():
 
 def GetHostName():
 	return socket.gethostname()
+
+def GetMacAddress():
+	return str(gma())

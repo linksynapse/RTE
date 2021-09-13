@@ -18,11 +18,12 @@ class R3api(object):
 		self.mdsurl = "http://" + config.mds_host() + ":" + str(config.mds_port()) + "/"
 		self.cookie = None
 
-	def GetDeviceInformation(self, cpu_id, ipaddress, macaddress):
+	def GetDeviceInformation(self, cpu_id, nataddr, pubaddr, macaddress):
 		data = {
 			"cpu_id":cpu_id,
-			"ipaddress":ipaddress,
-			"macaddress":macaddress
+			"pubaddr":pubaddr,
+			"nataddr":nataddr,
+			"macaddr":macaddress
 		}
 		try:
 			res = requests.post(self.baseurl + "4CF2C6704161CB5C3DCB0FFE9A52B4EC", json=data, verify=False, headers=self.headers)

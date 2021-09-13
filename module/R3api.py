@@ -14,28 +14,33 @@ class R3api(object):
 							'mimeType': 'application/json'
 						}
 
-		self.baseurl = "https://" + self.host + ":" + str(self.port) + "/"
+		self.baseurl = "http://" + self.host + ":" + str(self.port) + "/"
 		self.mdsurl = "http://" + config.mds_host() + ":" + str(config.mds_port()) + "/"
 		self.cookie = None
 
-	def GetSerialKey(self, CPUID):
+	def GetDeviceInformation(self, cpu_id, ipaddress, macaddress):
 		data = {
-			"CPUID":CPUID
+			"cpu_id":cpu_id,
+			"ipaddress":ipaddress,
+			"macaddress":macaddress
 		}
 		try:
-			res = requests.post(self.baseurl + "g_serial", params=data, verify=False, headers=self.headers)
+			res = requests.post(self.baseurl + "4CF2C6704161CB5C3DCB0FFE9A52B4EC", json=data, verify=False, headers=self.headers)
 		except:
 			return (False, "connection error", 2)
 		
 		if(res.status_code == 200):
 			result = json.loads(res.text)
-			if(result['code'] == 1):
-				return (True, result['data']['SerialKey'], 1)
+			if(result['Result'] == 0):
+				return (True, result['Data'], 0)
 			else:
-				return (False, result['reason'], 4)
+				return (False, result['Data'][0]['Message'], result['Data'][0]['MsgCode'])
 		else:
 			return (False, "connection error", 3)
 
+	# 
+	#	Unused system
+	#
 	def VerifyLicense(self):
 		data = {
 			"SERIALKEY":self.config.serialkey(),
@@ -55,6 +60,9 @@ class R3api(object):
 		else:
 			return (False, "Error from server", 3)
 
+	# 
+	#	Unused system
+	#
 	def ApplyTokenToServer(self, data):
 		try:
 			res = requests.post(self.baseurl + "s_info", params=data, verify=False, headers=self.headers)
@@ -70,6 +78,10 @@ class R3api(object):
 		else:
 			return (False, "Error from server", 3)
 
+
+	# 
+	#	Unused system
+	#
 	def Authentification(self, data):
 		try:
 			res = requests.post(self.mdsurl + "g_session", params=data, verify=False, headers=self.headers)
@@ -87,6 +99,7 @@ class R3api(object):
 		else:
 			return (False, "Error from server", 3)
 
+	
 	def UploadHistory(self, data):
 		try:
 			data = {
@@ -109,22 +122,29 @@ class R3api(object):
 		else:
 			return (False, "Error from server", 3)
 
-	def DownloadUser(self):
+	def DownloadUser(self, proj_id):
 		try:
+			data = {
+				'proj_id' : proj_id
+			}
+
 			self.headers['cookie'] = self.cookie
-			res = requests.post(self.mdsurl + "user", verify=False, headers=self.headers)
+			res = requests.post(self.baseurl + "57C5A9EEA786CD47EE17D720420493FA", json=data, verify=False, headers=self.headers)
 		except:
 			return (False, "Error from server", 2)
 			
 		if(res.status_code == 200):
 			result = json.loads(res.text)
-			if(result['code'] == 1):
-				return (True, result['data'], 1)
+			if(result['Result'] == 0):
+				return (True, result['Data'], 0)
 			else:
-				return (False, result['reason'], result['code'])
+				return (False, result['Data'][0]['Message'], result['Data'][0]['MsgCode'])
 		else:
-			return (False, "Error from server", 3)
+			return (False, "connection error", 3)
 
+	# 
+	#	Unused system
+	#
 	def ProgressWork(self, data):
 		try:
 			self.headers['cookie'] = self.cookie
@@ -141,6 +161,9 @@ class R3api(object):
 		else:
 			return (False, "Error from server", 3)
 
+	# 
+	#	Unused system
+	#
 	def CheckStatus(self,data):
 		try:
 			self.headers['cookie'] = self.cookie
@@ -157,6 +180,9 @@ class R3api(object):
 		else:
 			return (False, "Error from server", 3)
 
+	# 
+	#	Unused system
+	#
 	def ChangeStatus(self, data):
 		try:
 			self.headers['cookie'] = self.cookie

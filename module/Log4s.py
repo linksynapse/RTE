@@ -23,10 +23,10 @@ class Log4s:
 
 			f = open(AbsPath,'a+')
 
-			f.write("[{}] {}\r\n".format(datetime.datetime.now().strftime('%H:%M:%S'), msg))
+			f.write("[{}] {}\r\n".format(datetime.datetime.now().strftime('%Y/%m/%dT%H:%M:%S.%f'), msg))
 
 			if self.echo == 1:
-				print("[{}] {}\r\n".format(datetime.datetime.now().strftime('%H:%M:%S'), msg))
+				print("[{}] {}\r\n".format(datetime.datetime.now().strftime('%Y/%m/%dT%H:%M:%S.%f'), msg))
 
 			f.close()
 
@@ -43,17 +43,17 @@ class Log4s:
 
 			f = open(AbsPath,'a+')
 
-			f.write("[{}] {}\r\n".format(datetime.datetime.now().strftime('%H:%M:%S'), msg))
+			f.write("[{}] {}\r\n".format(datetime.datetime.now().strftime('%Y/%m/%dT%H:%M:%S.%f'), msg))
 			
 			if self.echo == 1:
-				print("[{}] {}\r\n".format(datetime.datetime.now().strftime('%H:%M:%S'), msg))
+				print("[{}] {}\r\n".format(datetime.datetime.now().strftime('%Y/%m/%dT%H:%M:%S.%f'), msg))
 
 			f.close()
 
 	def err(self, module, msg):
 		# LEVEL 1 Enable
 		if self.level > 0:
-			datefolder = datetime.datetime.now().strftime('%Y%m%d')
+			datefolder = datetime.datetime.now().strftime('%Y/%m/%d')
 			file = module
 			AbsRootPath = self.error + "/" + datefolder
 			AbsPath = AbsRootPath + "/" + file + ".log"
@@ -63,9 +63,9 @@ class Log4s:
 
 			f = open(AbsPath,'a+')
 
-			f.write("[{}] {}\r\n".format(datetime.datetime.now().strftime('%H:%M:%S'), msg))
+			f.write("[{}] {}\r\n".format(datetime.datetime.now().strftime('%Y/%m/%dT%H:%M:%S.%f'), msg))
 			
 			if self.echo == 1:
-				print("[{}] {}\r\n".format(datetime.datetime.now().strftime('%H:%M:%S'), msg))
+				print("[{}] {}\r\n".format(datetime.datetime.now().strftime('%Y/%m/%dT%H:%M:%S.%f'), msg))
 
 			f.close()

@@ -1,9 +1,0 @@
-[2021/09/13T12:03:21.272952] Successfully gettering device information.
-[2021/09/13T12:03:21.281927] [{"cpu_id": "ERROR00000000000", "gant_id": "21c33bd8-14aa-498c-9d69-4998ec05e42f", "gant_name": "BB21A001", "last_nataddr": "10.100.100.117", "proj_id": "3f7ae379-dfc0-44a9-8fc5-3231430f549d", "serial": "BB21A001", "status": "IN"}]
-[2021/09/13T12:03:23.361017] Successfully gettering account information.
-[2021/09/13T12:06:09.238193] Successfully gettering device information.
-[2021/09/13T12:06:09.248275] [{"cpu_id": "ERROR00000000000", "gant_id": "21c33bd8-14aa-498c-9d69-4998ec05e42f", "gant_name": "BB21A001", "last_nataddr": "10.100.100.117", "proj_id": "3f7ae379-dfc0-44a9-8fc5-3231430f549d", "serial": "BB21A001", "status": "IN"}]
-[2021/09/13T12:06:11.335219] Successfully gettering account information.
-[2021/09/13T12:11:19.530776] Successfully gettering device information.
-[2021/09/13T12:11:19.536788] [{"cpu_id": "ERROR00000000000", "gant_id": "21c33bd8-14aa-498c-9d69-4998ec05e42f", "gant_name": "BB21A001", "last_nataddr": "10.100.100.117", "proj_id": "3f7ae379-dfc0-44a9-8fc5-3231430f549d", "serial": "BB21A001", "status": "IN"}]
-[2021/09/13T12:11:21.608318] Successfully gettering account information.

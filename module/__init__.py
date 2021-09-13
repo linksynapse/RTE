@@ -6,9 +6,11 @@ from module import Native
 from module import R3api
 #from module import RfidReader
 
+import threading
+
 CONF = Config.Config("Config/sys.conf")
 #A22S = Accessories.Accessories(CONF)
-DATA = Data.Manager(CONF)
+DATA = Data#.Manager(CONF)
 LOG4S = Log4s.Log4s(CONF)
 API = R3api.R3api(CONF)
 #RFRD = RfidReader.RfidReader(CONF)

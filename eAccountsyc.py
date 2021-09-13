@@ -1,17 +1,23 @@
-from module import CONF, LOG4S, API, DATA
+from module import CONF, LOG4S, API
 from module import NT_SYS_PUBIP, NT_SYS_NATIP, NT_SYS_CPUID, NT_SYS_MACAR
 import traceback
 import time
 import json
 
-def GetAccountData(proj_id):
+def GetAccountData(lock, proj_id):
 	data = API.DownloadUser(proj_id)
 	if(data[0]):
 		resultCode = data[2]
 		if(resultCode == 0):
 			data = data[1]
-			with open('data/account.json','w',encoding='utf-8') as fs:
-				json.dump(data, fs, indent="\t")
+			try:
+				lock.acquire()
+				with open('data/account.json','w',encoding='utf-8') as fs:
+					json.dump(data, fs, indent="\t")
+			except Exception as err:
+				LOG4S.err('eAccountsyc', 'Error Download Account data.\r\n' + str(type(err)) + "\r\n" + traceback.format_exc())
+			finally:
+				lock.release()
 
 			LOG4S.info('eAccountsyc', 'Successfully gettering account information.')
 		else:
@@ -19,13 +25,14 @@ def GetAccountData(proj_id):
 	else:
 		raise ValueError("Can not access server.")
 
-if __name__ == '__main__':
+def eAccountsycExec(lock):
 	cpu_id = None
 	ipaddress = None
 	macaddress = None
 	gant_id = None
 	gant_name = None
 	proj_id = None
+	proj_name = None
 	serial = None
 	status = None
 
@@ -41,13 +48,14 @@ if __name__ == '__main__':
 					gant_id = x['gant_id']
 					gant_name = x['gant_name']
 					proj_id = x['proj_id']
+					proj_name = x['proj_name']
 					serial = x['serial']
 					status = x['status']
 
 				LOG4S.info('eAccountsyc', 'Successfully gettering device information.')
 				LOG4S.info('eAccountsyc', json.dumps(data))
 
-				GetAccountData(proj_id=proj_id)
+				GetAccountData(proj_id=proj_id, lock=lock)
 			else:
 				raise ValueError("No record")
 		else:

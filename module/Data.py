@@ -1,18 +1,13 @@
 import sqlite3
+import threading
 import os.path
 import datetime
 import json
+import traceback
 
-class Manager:
-	def __init__(self, config):
-		self.path = config.Database()
-		self.db = sqlite3.connect(self.path)
-
-	def __del__(self):
-		self.db.close()
-
-
-	def Verify(self, Card):
+def Verify(Log4s, lock, card):
+	try:
+		lock.acquire()
 		# database connection create and query
 		with open('data/account.json', 'r') as fs:
 			json_data = json.load(fs)
@@ -20,54 +15,98 @@ class Manager:
 		result = None
 
 		for x in json_data:
-			if x['CardNumber'] == Card:
+			if x['CardNumber'] == card:
 				result = (x['Badge'],x['Name'],x['CardNumber'])
 
 		if(result == None):
 			return (False, None)
 		else:
 			return (True, result)
+	except Exception as err:
+		Log4s.err('DataVerify', str(type(err)) + "\r\n" + traceback.format_exc())
+	finally:
+		lock.release()
 
-	def CheckTime(self, data):
+def CheckTime(Log4s, dbpath, lock, data):
+	try:
+		lock.acquire()
 		# Create issue time
-		TickTime = datetime.datetime.now().timestamp()
+		TickTime = datetime.datetime.now().isoformat()
 
 		# database connection create and query
-		db = sqlite3.connect(self.path)
-		cursor = db.cursor()
-		cursor.execute("INSERT INTO `User.History` (Badge, Card, Time) VALUES (?, ?, ?)",(data[0], data[2], TickTime,))
-		db.commit()
+		dbconn = sqlite3.connect(dbpath)
+		dbconn.row_factory = sqlite3.Row
 
+		cursor = dbconn.cursor()
+		cursor.execute("INSERT INTO `TagHistory` VALUES (?, ?, ?, ?, ?, ?, ?, ?)",(data['user_id'], data['user_name'], data['card_id'], data['card_name'], data['com_id'], data['com_name'], TickTime, 0))
+			
 		result = cursor.lastrowid
-		cursor.close()
+
+		dbconn.commit()
+		dbconn.close()
 
 		if(result == None):
 			return (False, None)
 		else:
 			return (True, result)
+	except Exception as err:
+		Log4s.err('HistoryInput', str(type(err)) + "\r\n" + traceback.format_exc())
+	finally:
+		lock.release()
+		return (False, None)
 
-	def DoneSendHistory(self, data):
-		db = sqlite3.connect(self.path)
-		cursor = db.cursor()
-		cursor.execute("UPDATE `User.History` SET Sended = 1 WHERE Badge = ? AND Card = ? AND Time = ?",(data[0],data[1],data[2],))
-		db.commit()
+def SelectHistory(Log4s, dbpath, lock):
+	result = None
+	rbool = False
+	try:
+		lock.acquire()
+		dbconn = sqlite3.connect(dbpath)
+		dbconn.row_factory = sqlite3.Row
 
+		cursor = dbconn.cursor()
+		cursor.execute("SELECT * FROM `TagHistory` WHERE send_to = 0")
+
+		result = cursor.fetchall()
+		dbconn.commit()
+		dbconn.close()
+
+		if(len(result) == 0):
+			rbool = False
+			raise ValueError("No record")
+		else:
+			rbool = True
+
+	except Exception as err:
+		Log4s.err('HistoryOutput', str(type(err)) + "\r\n" + traceback.format_exc())
+
+	finally:
+		lock.release()
+		return (rbool, json.dumps([dict(ix) for ix in result]))
+
+def ChangeStatus(Log4s, dbpath, lock, data):
+	try:
+		lock.acquire()
+		# Create issue time
+		TickTime = datetime.datetime.now().isoformat()
+
+		# database connection create and query
+		dbconn = sqlite3.connect(dbpath)
+		dbconn.row_factory = sqlite3.Row
+
+		cursor = dbconn.cursor()
+		cursor.execute("UPDATE `TagHistory` SET send_to = 1 WHERE user_id = ? and user_name = ? and card_id = ? and card_name = ? and com_id = ? and com_name = ? and created_on = ?",(data['user_id'], data['user_name'], data['card_id'], data['card_name'], data['com_id'], data['com_name'], data['created_on']))
+			
 		result = cursor.lastrowid
-		cursor.close()
+
+		dbconn.commit()
+		dbconn.close()
 
 		if(result == None):
 			return (False, None)
 		else:
 			return (True, result)
-
-	def SelectHistory(self):
-		cursor = self.db.cursor()
-		cursor.execute("SELECT * FROM `User.History` WHERE Sended = 0 LIMIT 1")
-		result = cursor.fetchone()
-		cursor.close()
-
-		if(result == None):
-			return (False, None)
-		else:
-			return (True, result)
-		
+	except Exception as err:
+		Log4s.err('HistoryInput', str(type(err)) + "\r\n" + traceback.format_exc())
+	finally:
+		lock.release()
+		return (False, None)

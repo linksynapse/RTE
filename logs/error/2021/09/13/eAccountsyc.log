@@ -1,7 +1,0 @@
-[2021/09/13T12:02:39.025688] Unknown error fail execute verification module
-<class 'ValueError'>
-Traceback (most recent call last):
-  File "c:\Users\¿Ã∞Ê≈¬\Documents\git\RTEv2\eAccountsyc.py", line 54, in <module>
-    raise ValueError("Can not gettering device information.");
-ValueError: Can not gettering device information.
-

@@ -27,17 +27,17 @@ class R3api(object):
 		}
 		try:
 			res = requests.post(self.baseurl + "4CF2C6704161CB5C3DCB0FFE9A52B4EC", json=data, verify=False, headers=self.headers)
+
+			if(res.status_code == 200):
+				result = json.loads(res.text)
+				if(result['Result'] == 0):
+					return (True, result['Data'], 0)
+				else:
+					return (False, result['Data'][0]['Message'], result['Data'][0]['MsgCode'])
+			else:
+				return (False, "connection error", 3)
 		except:
 			return (False, "connection error", 2)
-		
-		if(res.status_code == 200):
-			result = json.loads(res.text)
-			if(result['Result'] == 0):
-				return (True, result['Data'], 0)
-			else:
-				return (False, result['Data'][0]['Message'], result['Data'][0]['MsgCode'])
-		else:
-			return (False, "connection error", 3)
 
 	# 
 	#	Unused system
@@ -101,27 +101,31 @@ class R3api(object):
 			return (False, "Error from server", 3)
 
 	
-	def UploadHistory(self, data):
+	def UploadHistory(self, gant_id, gant_name, serial, proj_id, proj_name, status, data):
 		try:
 			data = {
-				"badge":data[0],
-				"card":data[1],
-				"time":data[2],
-				"serialkey":data[4]
+				"gant_id":gant_id,
+				"gant_name":gant_name,
+				"serial":serial,
+				"proj_id":proj_id,
+				"proj_name":proj_name,
+				"status":status,
+				"data":data
 			}
 			self.headers['cookie'] = self.cookie
-			res = requests.post(self.mdsurl + "history", params=data, verify=False, headers=self.headers)
+			res = requests.post(self.baseurl + "C8CDC5F3D46143B664D72D039B5832FC", json=data, verify=False, headers=self.headers)
+
+			if(res.status_code == 200):
+				result = json.loads(res.text)
+				if(result['Result'] == 0):
+					return (True, result['Data'], 0)
+				else:
+					return (False, result['Data'][0]['Message'], result['Data'][0]['MsgCode'])
+			else:
+				return (False, "connection error", 3)
 		except:
 			return (False, "Error from server", 2)
 			
-		if(res.status_code == 200):
-			result = json.loads(res.text)
-			if(result['code'] == 1):
-				return (True, result['reason'], 1)
-			else:
-				return (False, result['reason'], result['code'])
-		else:
-			return (False, "Error from server", 3)
 
 	def DownloadUser(self, proj_id):
 		try:

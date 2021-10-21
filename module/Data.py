@@ -15,8 +15,8 @@ def Verify(Log4s, lock, card):
 		result = None
 
 		for x in json_data:
-			if x['CardNumber'] == card:
-				result = (x['Badge'],x['Name'],x['CardNumber'])
+			if x['card_name'] == card:
+				result = x
 
 		if(result == None):
 			return (False, None)
@@ -72,7 +72,6 @@ def SelectHistory(Log4s, dbpath, lock):
 
 		if(len(result) == 0):
 			rbool = False
-			raise ValueError("No record")
 		else:
 			rbool = True
 

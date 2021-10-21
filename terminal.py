@@ -1,43 +1,43 @@
+from module import CONF, LOG4S, DATA
+from module import RfidReader as HAL
+from module import Accessories as ACSI
 import sys
-import Log4s
-import Config
-import HAL
-import Accessories
-import Data
 
-def Start(self):
-	config = Config.Config("Config/sys.conf")
-	Log = Log4s.Log4s(self.config)
-	Aies = Accessories.Manager(self.config)
-	Dao = Data.Manager(self.config)
-	Reader = HAL.handler(self.config)
+#def Start():
+#	
+#	try:
+#		Read()
+#	except KeyboardInterrupt:
+#		LOG4S.info("HardWare","KeyboardInterrupt.")
+#	except Exception as err:
+#		LOG4S.err("HardWare",str(err))
+#	finally:
+#		sys.exit()
 
+def Read(lock):
+	Aies = ACSI.Accessories(CONF)
+	Reader = HAL.RfidReader(CONF)
+	
 	Aies.PlayLoadComplate()
-	try:
-		self.Read()
-	except KeyboardInterrupt:
-		self.Log.info("HardWare","KeyboardInterrupt.")
-	except Exception as err:
-		self.Log.err("HardWare",str(err))
-	finally:
-		sys.exit()
-
-def Read(self):
 	while True:
-		EM = self.Reader.GetEM()
+		EM = Reader.GetEM()
 
-		data = self.Dao.Verify(EM)
+		data = DATA.Verify(LOG4S,lock,EM)
 		if data[0]:
 			# Pass
-			self.Dao.CheckTime(data[1])
-			self.Aies.OnBlue()
-			self.Aies.FulldownExt1()
-			self.Aies.PlaySuccess()
+			print(EM)
+			DATA.CheckTime(LOG4S, CONF.Database(), lock, data[1])
+			Aies.OnBlue()
+			Aies.FulldownExt1()
+			Aies.PlaySuccess()
+		elif str(EM) == '0':
+			continue
 		else:
 			# Deny
-			self.Aies.OnRed()
-			self.Aies.FulldownExt2()
-			self.Aies.PlayFail()
+			print(EM)
+			Aies.OnRed()
+			Aies.FulldownExt2()
+			Aies.PlayFail()
 		
-		self.Aies.ClearLed()
-		self.Aies.RaisingAll()
+		Aies.ClearLed()
+		Aies.RaisingAll()

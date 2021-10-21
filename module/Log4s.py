@@ -53,7 +53,7 @@ class Log4s:
 	def err(self, module, msg):
 		# LEVEL 1 Enable
 		if self.level > 0:
-			datefolder = datetime.datetime.now().strftime('%Y/%m/%d')
+			datefolder = datetime.datetime.now().strftime('%Y%m%d')
 			file = module
 			AbsRootPath = self.error + "/" + datefolder
 			AbsPath = AbsRootPath + "/" + file + ".log"

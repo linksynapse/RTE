@@ -1,9 +1,4 @@
-import Data
-import Config
-import SyS
-
-config = Config.Config("Config/sys.conf")
-
-Dao = Data.Manager(config)
+from module import DATA, CONF
+from module import Native as SyS
 
 print("System UUID : " + SyS.GetCPUID())
